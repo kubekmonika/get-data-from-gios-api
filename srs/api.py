@@ -3,6 +3,7 @@ This is a file which will contain basic functions to call the GIOŚ API
 """
 
 import requests
+import errors
 
 
 def get_all_measuring_stations():
@@ -34,7 +35,6 @@ def get_all_measuring_stations():
         return response.json()
     else:
         response.raise_for_status()
-    raise Exception("Something went wrong")
 
 
 def get_all_sensors(station_id):
@@ -72,9 +72,8 @@ def get_all_sensors(station_id):
             if json:
                 return json
             else:
-                raise Exception("No data returned for this station")
+                raise errors.NoDataReturned(f'Response: "{response.text}"')
         else:
-            raise Exception("No data returned for this station")
+            raise errors.NoDataReturned(f'Response: "{response.text}"')
     else:
         response.raise_for_status()
-    raise Exception("Something went wrong")
