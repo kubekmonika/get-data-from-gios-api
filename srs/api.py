@@ -77,3 +77,37 @@ def get_all_sensors(station_id):
             raise errors.NoDataReturned(f'Response: "{response.text}"')
     else:
         response.raise_for_status()
+
+
+def get_measurement_data(sensor_id):
+    """
+    Returns data for a given sensor.
+
+    Examplary response
+    ------------------
+    {
+        "key": "PM10",
+        "values": [
+        {
+            "date": "2017-03-28 11:00:00",
+            "value": 30.3018
+        },
+        {
+            "date": "2017-03-28 12:00:00",
+            "value": 27.5946
+        }]
+    }
+    """
+    url = f"https://api.gios.gov.pl/pjp-api/rest/data/getData/{sensor_id}"
+    response = requests.get(url, timeout=5)
+    if response.status_code == requests.codes.ok:
+        if response.text:
+            json = response.json()
+            if json:
+                return json
+            else:
+                raise errors.NoDataReturned(f'Response: "{response.text}"')
+        else:
+            raise errors.NoDataReturned(f'Response: "{response.text}"')
+    else:
+        response.raise_for_status()
