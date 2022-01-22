@@ -34,4 +34,47 @@ def get_all_measuring_stations():
         return response.json()
     else:
         response.raise_for_status()
-        raise Exception("Something went wrong")
+    raise Exception("Something went wrong")
+
+
+def get_all_sensors(station_id):
+    """
+    Returns a list of all sensors for a given station.
+
+    Examplary response
+    ------------------
+    [{
+        "id": 92,
+        "stationId": 14,
+        "param": {
+            "paramName": "pył zawieszony PM10",
+            "paramFormula": "PM10",
+            "paramCode": "PM10",
+            "idParam": 3
+        }
+    },
+    {
+        "id": 88,
+        "stationId": 14,
+        "param": {
+            "paramName": "dwutlenek azotu",
+            "paramFormula": "NO2",
+            "paramCode": "NO2",
+            "idParam": 6
+        }
+    }]
+    """
+    url = f"https://api.gios.gov.pl/pjp-api/rest/station/sensors/{station_id}"
+    response = requests.get(url, timeout=5)
+    if response.status_code == requests.codes.ok:
+        if response.text:
+            json = response.json()
+            if json:
+                return json
+            else:
+                raise Exception("No data returned for this station")
+        else:
+            raise Exception("No data returned for this station")
+    else:
+        response.raise_for_status()
+    raise Exception("Something went wrong")
